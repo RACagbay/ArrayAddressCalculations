@@ -1,0 +1,20 @@
+import java.util.Scanner;
+
+public class RecordAddressCalculation {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Enter the number of records: ");
+        int numRecords = scanner.nextInt();
+        System.out.print("Enter the size of each record in bytes: ");
+        int recordSize = scanner.nextInt();
+        System.out.print("Enter the starting address: ");
+        int startAddress = scanner.nextInt();
+        
+        for (int i = 1; i <= numRecords; i++) {
+            int address = startAddress + (i - 1) * recordSize;
+            System.out.println("Address of record " + i + " is: " + address);
+        }
+        
+        scanner.close();
+    }
+}
