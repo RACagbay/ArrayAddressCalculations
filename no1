@@ -1,49 +1,95 @@
-
-package javaapplication3;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-public class NewMain {
-
+public class ArrayAddressCalculator {
 
     public static void main(String[] args) throws IOException {
-        BufferedReader br=new BufferedReader(new InputStreamReader(System.in));
-        long size_of_element,base_address,index;
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        long baseAddress, elementSize;
+        int numDimensions;
+
         System.out.println("Enter the base address of the array: ");
-        
-        try{
-            base_address=Long.parseLong(br.readLine());
-        }
-        catch(Exception e){
+        try {
+            baseAddress = Long.parseLong(br.readLine());
+        } catch (Exception e) {
             System.out.println("Invalid Base Address");
             return;
         }
+
         System.out.println("Enter the size of the array element in bytes: ");
-        try{
-            size_of_element=Long.parseLong(br.readLine());
-        }
-        catch(Exception e){
+        try {
+            elementSize = Long.parseLong(br.readLine());
+        } catch (Exception e) {
             System.out.println("Invalid Size");
             return;
         }
-        System.out.println("Enter the index of the element: ");
-        try{
-            index=Long.parseLong(br.readLine());
-        }
-        catch(Exception e){
-            System.out.println("Invalid Index");
+
+        System.out.println("Enter the number of dimensions: ");
+        try {
+            numDimensions = Integer.parseInt(br.readLine());
+        } catch (Exception e) {
+            System.out.println("Invalid Number of Dimensions");
             return;
         }
-        if( base_address < 0 || size_of_element <=0 || index < 0 ){
-            System.out.println("Invalid Input");
-        }
-        long element_Address;
-        element_Address = base_address + (size_of_element * index);
-        System.out.println("The address of the element at index "+ index
-                                                 +" is "+element_Address);
-        }
-    }
-    
 
+        if (numDimensions <= 0) {
+            System.out.println("Invalid Number of Dimensions");
+            return;
+        }
+
+        long[] dimensions = new long[numDimensions];
+        long[] indices = new long[numDimensions];
+
+        for (int i = 0; i < numDimensions; i++) {
+            System.out.println("Enter the size of dimension " + (i + 1) + ": ");
+            try {
+                dimensions[i] = Long.parseLong(br.readLine());
+            } catch (Exception e) {
+                System.out.println("Invalid Size of Dimension " + (i + 1));
+                return;
+            }
+
+            if (dimensions[i] <= 0) {
+                System.out.println("Invalid Size of Dimension " + (i + 1));
+                return;
+            }
+
+            System.out.println("Enter the index of the element in dimension " + (i + 1) + ": ");
+            try {
+                indices[i] = Long.parseLong(br.readLine());
+            } catch (Exception e) {
+                System.out.println("Invalid Index in Dimension " + (i + 1));
+                return;
+            }
+        }
+
+        long arrayAddress = calculateArrayAddress(baseAddress, elementSize, dimensions, indices);
+
+        System.out.println("The address of the element at indices " + arrayToString(indices) + " is " + arrayAddress);
+    }
+
+    private static long calculateArrayAddress(long baseAddress, long elementSize, long[] dimensions, long[] indices) {
+        long arrayAddress = baseAddress;
+        for (int i = 0; i < dimensions.length; i++) {
+            long multiplier = 1;
+            for (int j = i + 1; j < dimensions.length; j++) {
+                multiplier *= dimensions[j];
+            }
+            arrayAddress += elementSize * indices[i] * multiplier;
+        }
+        return arrayAddress;
+    }
+
+    private static String arrayToString(long[] array) {
+        StringBuilder result = new StringBuilder("[");
+        for (int i = 0; i < array.length; i++) {
+            result.append(array[i]);
+            if (i < array.length - 1) {
+                result.append(", ");
+            }
+        }
+        result.append("]");
+        return result.toString();
+    }
+}
